@@ -1,4 +1,24 @@
-<div class="form-group" ng-class="{'has-error': hasError(), 'has-success': hasSuccess(), 'has-feedback': form.feedback !== false}" ng-init="form.select_models=(items| whereMulti : 'value' : ($$value$$||[]))">
+<script type='text/javascript'>
+    angular.module('lightApp').controller('selectItemCtrl', ['$scope', '$http', '$location', 'modelDataService', 'toaster', function ($scope, $http, $location, modelDataService, toaster) {
+        $scope.getItem = {
+            readOnly: true
+        };
+
+        $scope.items = [];
+
+        //The function that is responsible of fetching the result from the server and setting the grid to the new result
+        $scope.fetchResult = function () {
+            $http.post('api/rs', $scope.getItem)
+                    .success(function (result, status, headers, config) {
+                        $scope.items = result;
+                        console.log('items', $scope.items);
+                    })
+        };
+        $scope.fetchResult();
+
+    }]);
+</script>
+<div class="form-group" ng-class="{'has-error': hasError(), 'has-success': hasSuccess(), 'has-feedback': form.feedback !== false}" ng-controller="selectItemCtrl" ng-init="form.select_models=(items| whereMulti : 'value' : ($$value$$||[])); getItem.category=form.options.category; getItem.name=form.options.name">
   <label class="control-label" ng-show="showTitle()">{{form.title}}</label>
   <div class="form-group">
     <ui-select multiple sortable-options="{{form.sortableOptions}}" ng-model="form.select_models" theme="bootstrap" on-select="$$value$$.push($item.value)" on-remove="$$value$$.splice($$value$$.indexOf($item.value), 1)" class="{{form.options.uiClass}}">
