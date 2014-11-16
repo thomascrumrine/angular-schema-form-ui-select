@@ -1,29 +1,9 @@
-<script type='text/javascript'>
-    angular.module('lightApp').controller('selectItemCtrl', ['$scope', '$http', '$location', 'modelDataService', 'toaster', function ($scope, $http, $location, modelDataService, toaster) {
-        $scope.getItem = {
-            readOnly: true
-        };
-
-        $scope.items = [];
-
-        //The function that is responsible of fetching the result from the server and setting the grid to the new result
-        $scope.fetchResult = function () {
-            $http.post('api/rs', $scope.getItem)
-                    .success(function (result, status, headers, config) {
-                        $scope.items = result;
-                        console.log('items', $scope.items);
-                    })
-        };
-        $scope.fetchResult();
-
-    }]);
-</script>
-<div class="form-group" ng-class="{'has-error': hasError(), 'has-success': hasSuccess(), 'has-feedback': form.feedback !== false}" ng-init="select_models=(items | where : {value: $$value$$}); getItem.category=form.options.category; getItem.name=form.options.name">
+<div class="form-group" ng-class="{'has-error': hasError(), 'has-success': hasSuccess(), 'has-feedback': form.feedback !== false}" ng-init="select_models=(form.schema.items | where : {value: $$value$$})">
   <label class="control-label" ng-show="showTitle()">{{form.title}}</label>
   <div class="form-group" ng-init="select_model.selected=select_models[0]">
     <ui-select ng-model="select_model.selected" theme="bootstrap" ng-disabled="form.disabled" on-select="$$value$$=$item.value" class="{{form.options.uiClass}}">
       <ui-select-match placeholder="{{form.placeholder || form.schema.placeholder || ('placeholders.select' | translate)}}">{{select_model.selected.label}}</ui-select-match>
-      <ui-select-choices repeat="item in items | propsFilter: {label: $select.search}">
+      <ui-select-choices repeat="item in form.schema.items | propsFilter: {label: $select.search}">
         <div ng-bind-html="item.label | highlight: $select.search"></div>
       </ui-select-choices>
     </ui-select>
