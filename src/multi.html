@@ -1,49 +1,9 @@
-<script type='text/javascript'>
-    angular.module('lightApp').controller('selectItemCtrl', ['$scope', '$http', '$location', '$timeout', function ($scope, $http, $location, $timeout) {
-        $scope.getItem = {
-            readOnly: true
-        };
-
-        $scope.init = function(select_models, values, category, name) {
-          $scope.getItem.category = category;
-          $scope.getItem.name = name;
-          $scope.select_models = select_models;
-          $scope.values = values;
-          console.log('select_models', $scope.select_models);
-          console.log('values', $scope.values);
-        };
-
-        $scope.items = [];
-
-        $timeout(function(){
-          $scope.items = [
-            { label: 'Form Admin', value: '#13:01'},
-            { label: 'Rule Admin', value: '#13:02'},
-            { label: 'User Admin', value: '#13:03'}
-          ];
-          if (angular.isArray($scope.values)) {
-            $scope.values.forEach(function(value) {
-              for (var i = 0; i < $scope.items.length; i++) {
-                if (value == $scope.items[i]['value']) {
-                  $scope.select_models.push($scope.items[i]);
-                  break;
-                }
-              }
-           });
-           } else {
-            // Let the output be the input untouched
-            $scope.select_models = $scope.items;
-          }
-
-        },3000);
-    }]);
-</script>
-<div class="form-group" ng-class="{'has-error': hasError(), 'has-success': hasSuccess(), 'has-feedback': form.feedback !== false}" ng-controller="selectItemCtrl" ng-init="init(form.select_models = [], $$value$$, form.options.category, form.options.name)">
+<div class="form-group" ng-class="{'has-error': hasError(), 'has-success': hasSuccess(), 'has-feedback': form.feedback !== false}" ng-init="form.select_models=(form.schema.items| whereMulti : 'value' : ($$value$$||[]))">
   <label class="control-label" ng-show="showTitle()">{{form.title}}</label>
   <div class="form-group">
     <ui-select multiple sortable-options="{{form.sortableOptions}}" ng-model="form.select_models" theme="bootstrap" on-select="$$value$$.push($item.value)" on-remove="$$value$$.splice($$value$$.indexOf($item.value), 1)" class="{{form.options.uiClass}}">
       <ui-select-match placeholder="{{form.placeholder || form.schema.placeholder || ('placeholders.select' | translate)}}">{{$item.label}}</ui-select-match>
-      <ui-select-choices repeat="item in items | propsFilter: {label: $select.search}">
+      <ui-select-choices repeat="item in form.schema.items | propsFilter: {label: $select.search}">
         <div ng-bind-html="item.label | highlight: $select.search"></div>
       </ui-select-choices>
     </ui-select>

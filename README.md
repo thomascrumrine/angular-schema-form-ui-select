@@ -34,7 +34,7 @@ Example
 When you create your module, be sure to depend on this project's module as well.
 
 ```javascript
-angular.module('yourModule', ['schemaForm', 'schemaForm-ui-select']);
+angular.module('yourModule', ['schemaForm']);
 ```
 
 Usage
