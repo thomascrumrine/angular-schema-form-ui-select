@@ -28,44 +28,44 @@ var lightApp = angular.module('lightApp', ['angular-underscore/filters', 'schema
         title: 'Name',
         type: 'string'
       },
-      select: {
-        title: 'Single Select',
+      staticselect: {
+        title: 'Static Single Select',
         type: 'string',
         format: 'uiselect',
-        description: 'Only single item is allowd',
+        description: 'Only single item is allowed',
         items: [
           { value: 'one', label: 'label1'},
           { value: 'two', label: 'label2'},
           { value: 'three', label: 'label3'}
         ]
       },
-      number_select: {
-        title: 'Number Select',
+      numberselect: {
+        title: 'Static Number Select',
         type: 'number',
         format: 'uiselect',
-        description: 'Only single item is allowd',
+        description: 'Only single item is allowed',
         items: [
-          { value: 1, label: 'label1'},
-          { value: 2, label: 'label2'},
-          { value: 3, label: 'label3'}
+          { value: 1, label: 'number1'},
+          { value: 2, label: 'number2'},
+          { value: 3, label: 'number3'}
         ]
       },
-      select2: {
-        title: 'Single Select',
+      dyanmicselect: {
+        title: 'Dynamic Single Select',
         type: 'string',
         format: 'uiselect',
-        description: 'Only single item is allowd',
+        description: 'Only single item is allowed',
         items: [
           { value: 'one', label: 'label1'},
           { value: 'two', label: 'label2'},
           { value: 'three', label: 'label3'}
         ]
       },
-      multiselect: {
-        title: 'Multi Select',
+      staticmultiselect: {
+        title: 'Static Multi Select',
         type: 'array',
         format: 'uiselect',
-        description: 'Multi single items arre allowd',
+        description: 'Multi single items arre allowed',
         minItems: 1,
         maxItems: 4,
         items: [
@@ -76,49 +76,54 @@ var lightApp = angular.module('lightApp', ['angular-underscore/filters', 'schema
           { value: 'five', label: 'label5'}
         ]
       },
-      another: {
-        title: 'Multi Select 2',
+      dynamicmultiselect: {
+        title: 'Dyanmic Multi Select',
         type: 'array',
         format: 'uiselect',
-        description: 'Multi single items arre allowd',
+        description: 'Multi single items arre allowed',
         minItems: 1,
+        maxItems: 2,
         items: [
-          { value: 'one', label: 'labelx'},
-          { value: 'two', label: 'labelc'},
-          { value: 'three', label: 'label3'}
+          { value: 'one', label: 'label1'},
+          { value: 'two', label: 'label2'},
+          { value: 'three', label: 'label3'},
+          { value: 'four', label: 'label4'},
+          { value: 'five', label: 'label5'}
         ]
       }
     },
-    required: ['select', 'select2', 'another', 'multiselect']
+    required: ['staticselect', 'numberselect', 'dyanmicselect', 'staticmultiselect', 'dynamicmultiselect']
   };
   $scope.refreshSelect = function(schema, search) {
     console.log('called');
     console.log(search);
     schema.items = [
-      { value: 'one', label: 'labelx'},
-      { value: 'two', label: 'labelc'},
-      { value: 'three', label: 'label3'}
+      { value: 'refreshed1', label: 'refreshed1'},
+      { value: 'refreshed2', label: 'refreshed2'},
+      { value: 'refreshed3', label: 'refreshed3'}
     ];
   }
   $scope.form = [
     'name',
      {
-       key: 'select',
+       key: 'staticselect',
        options: {
-         uiClass: 'short',
+         uiClass: 'short'
+       }
+     },
+     'numberselect',
+     {
+       key: 'dyanmicselect',
+       options: {
          refreshDelay: 100,
          refreshMethod: $scope.refreshSelect
        }
      },
-     'number_select',
      {
-       key: 'select2'
+       key: 'staticmultiselect'
      },
      {
-       key: 'another'
-     },
-     {
-       key: 'multiselect',
+       key: 'dynamicmultiselect',
        options: {
          uiClass: 'short',
          refreshDelay: 100,
@@ -127,8 +132,8 @@ var lightApp = angular.module('lightApp', ['angular-underscore/filters', 'schema
       }
   ];
   $scope.model = {
-    number_select: 1,
-    multiselect: ['three', 'one']
+    numberselect: 1,
+    staticmultiselect: ['three', 'one']
   };
   $scope.submitted = function(form){
     $scope.$broadcast('schemaFormValidate')
