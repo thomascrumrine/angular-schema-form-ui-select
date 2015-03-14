@@ -91,12 +91,23 @@ var lightApp = angular.module('lightApp', ['angular-underscore/filters', 'schema
     },
     required: ['select', 'select2', 'another', 'multiselect']
   };
+  $scope.refreshSelect = function(schema, search) {
+    console.log('called');
+    console.log(search);
+    schema.items = [
+      { value: 'one', label: 'labelx'},
+      { value: 'two', label: 'labelc'},
+      { value: 'three', label: 'label3'}
+    ];
+  }
   $scope.form = [
     'name',
      {
        key: 'select',
        options: {
-         uiClass: 'short'
+         uiClass: 'short',
+         refreshDelay: 100,
+         refreshMethod: $scope.refreshSelect
        }
      },
      'number_select',
@@ -107,7 +118,12 @@ var lightApp = angular.module('lightApp', ['angular-underscore/filters', 'schema
        key: 'another'
      },
      {
-       key: 'multiselect'
+       key: 'multiselect',
+       options: {
+         uiClass: 'short',
+         refreshDelay: 100,
+         refreshMethod: $scope.refreshSelect
+       }
       }
   ];
   $scope.model = {
