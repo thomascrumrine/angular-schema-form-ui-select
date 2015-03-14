@@ -125,10 +125,14 @@ angular.module('schemaForm').config(
           var keys = Object.keys(props);
           for (var i = 0; i < keys.length; i++) {
             var prop = keys[i];
-            var text = props[prop].toLowerCase();
-            if (item[prop].toString().toLowerCase().indexOf(text) !== -1) {
-              itemMatches = true;
-              break;
+            if (item.hasOwnProperty(prop)){
+              //only match if this property is actually in the item to avoid
+              var text = props[prop].toLowerCase();
+              //search for either a space before the text or the textg at the start of the string so that the middle of words are not matched
+              if (item[prop].toString().toLowerCase().indexOf(text) === 0 || ( item[prop].toString()).toLowerCase().indexOf(' ' + text) !== -1  ) {
+                itemMatches = true;
+                break;
+              }
             }
           }
 
