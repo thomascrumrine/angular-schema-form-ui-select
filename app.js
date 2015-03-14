@@ -19,7 +19,21 @@ var lightApp = angular.module('lightApp', ['angular-underscore/filters', 'schema
     lightApp.service    = $provide.service;
 
 }])
-.controller('SelectController', function($scope){
+.controller('SelectController', ['$scope', '$http', function($scope, $http){
+  $scope.refreshSelect = function(schema, options, search) {
+    console.log('refreshSelect is called');
+    return [
+      { value: 'refreshed1', label: 'refreshed1'},
+      { value: 'refreshed2', label: 'refreshed2'},
+      { value: 'refreshed3', label: 'refreshed3'}
+    ];
+  }
+
+  $scope.refreshSelectAsync = function(schema, options, search) {
+    console.log('refreshSelectAsync is called');
+    return $http.get(options.async.url);
+  }
+
   $scope.schema = {
     type: 'object',
     title: 'Select',
@@ -90,19 +104,32 @@ var lightApp = angular.module('lightApp', ['angular-underscore/filters', 'schema
           { value: 'four', label: 'label4'},
           { value: 'five', label: 'label5'}
         ]
-      }
+      },
+      asyncselect: {
+        title: 'Load Json Async Single Select',
+        type: 'string',
+        format: 'uiselect',
+        description: 'Only single item is allowed'
+      },
+      multiselect_get: {
+        title: 'Dyanmic Multi Select HTTP Get CORS',
+        type: 'array',
+        format: 'uiselect',
+        description: 'Multi single items arre allowed',
+        minItems: 1,
+        maxItems: 2
+      },
+      multiselect_post: {
+        title: 'Dyanmic Multi Select HTTP Post CORS',
+        type: 'array',
+        format: 'uiselect',
+        description: 'Multi single items arre allowed',
+        minItems: 1,
+        maxItems: 2
+      },
     },
-    required: ['staticselect', 'numberselect', 'dyanmicselect', 'staticmultiselect', 'dynamicmultiselect']
+    required: ['staticselect', 'numberselect', 'dyanmicselect', 'staticmultiselect', 'dynamicmultiselect', 'asyncselect', 'multiselect_get', 'multiselect_post']
   };
-  $scope.refreshSelect = function(schema, search) {
-    console.log('called');
-    console.log(search);
-    schema.items = [
-      { value: 'refreshed1', label: 'refreshed1'},
-      { value: 'refreshed2', label: 'refreshed2'},
-      { value: 'refreshed3', label: 'refreshed3'}
-    ];
-  }
   $scope.form = [
     'name',
      {
@@ -116,7 +143,7 @@ var lightApp = angular.module('lightApp', ['angular-underscore/filters', 'schema
        key: 'dyanmicselect',
        options: {
          refreshDelay: 100,
-         refreshMethod: $scope.refreshSelect
+         callback: $scope.refreshSelect
        }
      },
      {
@@ -127,9 +154,35 @@ var lightApp = angular.module('lightApp', ['angular-underscore/filters', 'schema
        options: {
          uiClass: 'short',
          refreshDelay: 100,
-         refreshMethod: $scope.refreshSelect
+         callback: $scope.refreshSelect
        }
-      }
+      },
+     {
+       key: 'asyncselect',
+       options: {
+           async: {
+               call: $scope.refreshSelectAsync,
+               url : "/test/testdata.json"
+           }
+       }
+     },
+     {
+       key: 'multiselect_get',
+       options: {
+           http_get: {
+               url : "http://example:8080/api/rs?cmd={\"category\": \"demo\", \"name\": \"getDropdown\", \"readOnly\": true}"
+           }
+       }
+     },
+     {
+       key: 'multiselect_post',
+       options: {
+           http_post: {
+               url : "http://example:8080/api/rs",
+               parameter: { category: "demo",  name: "getDropdown", readOnly: true}
+           }
+       }
+     }
   ];
   $scope.model = {
     numberselect: 1,
@@ -139,4 +192,4 @@ var lightApp = angular.module('lightApp', ['angular-underscore/filters', 'schema
     $scope.$broadcast('schemaFormValidate')
     console.log($scope.model);
   };
-});
+}]);

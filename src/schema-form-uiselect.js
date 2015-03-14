@@ -143,4 +143,49 @@ angular.module('schemaForm').config(
 
       return out;
     };
-  });
+  })
+  .controller('UiSelectController', ['$scope', '$http', function($scope, $http) {
+    
+    $scope.fetchResult = function (schema, options, search) {
+        if(options) {
+          if (options.callback) {
+              schema.items = options.callback(schema, options, search);
+              console.log('items', schema.items);
+          }
+          else if (options.http_post) {
+              return $http.post(options.http_post.url, options.http_post.parameter).then(
+                  function (_data) {
+                      schema.items = _data.data;
+                      console.log('items', schema.items);
+                  },
+                  function (data, status) {
+                      alert("Loading select items failed (URL: '" + String(options.http_post.url) +
+                          "' Parameter: " + String(options.http_post.parameter) + "\nError: "  + status);
+                  });
+          }
+          else if (options.http_get) {
+              return $http.get(options.http_get.url, options.http_get.parameter).then(
+                  function (_data) {
+                      schema.items = _data.data;
+                      console.log('items', schema.items);
+                  },
+                  function (data, status) {
+                      alert("Loading select items failed (URL: '" + String(options.http_get.url) +
+                          "\nError: "  + status);
+                  });
+          }
+          else if (options.async) {
+              return options.async.call(schema, options, search).then(
+                  function (_data) {
+                      schema.items = _data.data;
+                      console.log('items', schema.items);
+                  },
+                  function (data, status) {
+                      alert("Loading select items failed(Options: '" + String(options) +
+                          "\nError: "  + status);
+                  });
+          }
+          
+        }
+    };
+  }])
