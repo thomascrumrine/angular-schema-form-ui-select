@@ -296,7 +296,7 @@ var lightApp = angular.module('lightApp', ['angular-underscore/filters', 'schema
        key: 'multiselect_get',
        options: {
            http_get: {
-               url : "http://example:8080/api/rs?cmd={\"category\": \"demo\", \"name\": \"getDropdown\", \"readOnly\": true}"
+               url : "http://www.networknt.com/api/rs?cmd={\"category\": \"demo\", \"name\": \"getDropdown\", \"readOnly\": true}"
            }
        }
      },
@@ -304,7 +304,7 @@ var lightApp = angular.module('lightApp', ['angular-underscore/filters', 'schema
        key: 'multiselect_post',
        options: {
            http_post: {
-               url : "http://example:8080/api/rs",
+               url : "http://www.networknt.com/api/rs",
                parameter: { category: "demo",  name: "getDropdown", readOnly: true}
            }
        }
