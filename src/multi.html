@@ -1,3 +1,33 @@
+<script type='text/javascript'>
+    angular.module('lightApp').controller('UiSelectController', ['$scope', '$http', function ($scope, $http) {
+        $scope.fetchResult = function (schema, options, search) {
+            if(options) {
+                if (options.http_post) {
+                    return $http.post(options.http_post.url, options.http_post.parameter).then(
+                            function (data) {
+                                schema.items = data.data;
+                                console.log('items', schema.items);
+                            },
+                            function (data, status) {
+                                alert("Loading select items failed (URL: '" + String(options.http_post.url) +
+                                "' Parameter: " + String(options.http_post.parameter) + "\nError: "  + status);
+                            });
+                }
+                else if (options.http_get) {
+                    return $http.get(options.http_get.url, options.http_get.parameter).then(
+                            function (data) {
+                                schema.items = data.data;
+                                console.log('items', schema.items);
+                            },
+                            function (data, status) {
+                                alert("Loading select items failed (URL: '" + String(options.http_get.url) +
+                                "\nError: "  + status);
+                            });
+                }
+            }
+        };
+    }]);
+</script>
 <div class="form-group" ng-class="{'has-error': hasError(), 'has-success': hasSuccess(), 'has-feedback': form.feedback !== false}" ng-init="form.select_models=(form.schema.items| whereMulti : 'value' : ($$value$$||[]))">
   <label class="control-label" ng-show="showTitle()">{{form.title}}</label>
   <div class="form-group" ng-controller="UiSelectController">

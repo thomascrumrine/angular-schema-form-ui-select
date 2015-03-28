@@ -20,19 +20,6 @@ var lightApp = angular.module('lightApp', ['angular-underscore/filters', 'schema
 
 }])
 .controller('SelectController', ['$scope', '$http', function($scope, $http){
-  $scope.refreshSelect = function(schema, options, search) {
-    console.log('refreshSelect is called');
-    return [
-      { value: 'refreshed1', label: 'refreshed1'},
-      { value: 'refreshed2', label: 'refreshed2'},
-      { value: 'refreshed3', label: 'refreshed3'}
-    ];
-  }
-
-  $scope.refreshSelectAsync = function(schema, options, search) {
-    console.log('refreshSelectAsync is called');
-    return $http.get(options.async.url);
-  }
 
   $scope.tagFunction = function(content){
     var item = {
@@ -235,7 +222,7 @@ var lightApp = angular.module('lightApp', ['angular-underscore/filters', 'schema
           { value: 'four', label: 'label4'},
           { value: 'five', label: 'label5'}
         ]
-      },
+      }
     },
     required: ['staticselect', 'numberselect', 'dyanmicselect', 'staticmultiselect', 'dynamicmultiselect', 'asyncselect', 'multiselect_get', 'multiselect_post']
   };
