@@ -6,7 +6,7 @@ This ui-select add-on uses as the name implies the ui-select plugin to provide a
 Installation
 ------------
 The editor is an add-on to the Bootstrap decorator. To use it, just include
-`bootstrape-ui-select.min.js`.
+`bootstrap-ui-select.min.js`.
 
 Easiest way is to install is with bower, this will also include dependencies:
 ```bash
