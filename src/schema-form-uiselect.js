@@ -153,7 +153,10 @@ angular.module('schemaForm').config(
     $scope.fetchResult = function (schema, options, search) {
         if(options) {
           if (options.callback) {
-              schema.items = options.callback(schema, options, search);
+              var cb_func = (typeof options.callback == 'function') ?
+                  options.callback : new Function(options.callback);
+                  
+              schema.items = cb_func(schema, options, search);
               console.log('items', schema.items);
           }
           else if (options.http_post) {
@@ -179,7 +182,10 @@ angular.module('schemaForm').config(
                   });
           }
           else if (options.async) {
-              return options.async.call(schema, options, search).then(
+              var cb_func = (typeof options.async.call == 'function') ?
+                  options.async.call : new Function(options.async.call);
+                  
+              return cb_func(schema, options, search).then(
                   function (_data) {
                       schema.items = _data.data;
                       console.log('items', schema.items);
