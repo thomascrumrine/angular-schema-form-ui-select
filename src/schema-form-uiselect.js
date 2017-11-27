@@ -1,5 +1,5 @@
 angular.module('schemaForm').config(
-['schemaFormProvider', 'schemaFormDecoratorsProvider', 'sfPathProvider',
+  ['schemaFormProvider', 'schemaFormDecoratorsProvider', 'sfPathProvider',
   function(schemaFormProvider,  schemaFormDecoratorsProvider, sfPathProvider) {
 
     var uiselect = function(name, schema, options) {
@@ -38,7 +38,7 @@ angular.module('schemaForm').config(
     schemaFormProvider.defaults.array.unshift(uimultiselect);
 
 
-  //Add to the bootstrap directive
+    //Add to the bootstrap directive
     schemaFormDecoratorsProvider.addMapping('bootstrapDecorator', 'uiselect',
     'directives/decorators/bootstrap/uiselect/single.html');
     schemaFormDecoratorsProvider.createDirective('uiselect',
@@ -76,8 +76,8 @@ angular.module('schemaForm').config(
         var list = sfSelect($scope.$parent.form.key, $scope.$parent.model);
         //as per base array implemenation if the array is undefined it must be set as empty for data binding to work
         if (angular.isUndefined(list)) {
-            list = [];
-            sfSelect($scope.$parent.form.key, $scope.$parent.model, list);
+          list = [];
+          sfSelect($scope.$parent.form.key, $scope.$parent.model, list);
         }
         $scope.$parent.$watch('form.select_models',function(){
           if($scope.$parent.form.select_models.length == 0) {
@@ -149,53 +149,58 @@ angular.module('schemaForm').config(
     };
   })
   .controller('UiSelectController', ['$scope', '$http', function($scope, $http) {
-    
+
+    $scope.onSelect = function (modelValue, value, options) {
+      if(options && options.onSelect) {
+        var os_func = (typeof options.onSelect == 'function') ? options.onSelect : new Function(options.onSelect)
+        os_func(modelValue, value, options)
+      } else {
+        modelValue = value
+      }
+    }
+
     $scope.fetchResult = function (schema, options, search) {
-        if(options) {
-          if (options.callback) {
-              var cb_func = (typeof options.callback == 'function') ?
-                  options.callback : new Function(options.callback);
-                  
-              schema.items = cb_func(schema, options, search);
-              console.log('items', schema.items);
-          }
-          else if (options.http_post) {
-              return $http.post(options.http_post.url, options.http_post.parameter).then(
-                  function (_data) {
-                      schema.items = _data.data;
-                      console.log('items', schema.items);
-                  },
-                  function (data, status) {
-                      alert("Loading select items failed (URL: '" + String(options.http_post.url) +
-                          "' Parameter: " + String(options.http_post.parameter) + "\nError: "  + status);
-                  });
+      if(options) {
+        if (options.callback) {
+          var cb_func = (typeof options.callback == 'function') ?
+          options.callback : new Function(options.callback);
+
+          schema.items = cb_func(schema, options, search);
+        }
+        else if (options.http_post) {
+          return $http.post(options.http_post.url, options.http_post.parameter).then(
+            function (_data) {
+              schema.items = _data.data;
+            },
+            function (data, status) {
+              alert("Loading select items failed (URL: '" + String(options.http_post.url) +
+              "' Parameter: " + String(options.http_post.parameter) + "\nError: "  + status);
+            });
           }
           else if (options.http_get) {
-              return $http.get(options.http_get.url, options.http_get.parameter).then(
-                  function (_data) {
-                      schema.items = _data.data;
-                      console.log('items', schema.items);
-                  },
-                  function (data, status) {
-                      alert("Loading select items failed (URL: '" + String(options.http_get.url) +
-                          "\nError: "  + status);
-                  });
-          }
-          else if (options.async) {
+            return $http.get(options.http_get.url, options.http_get.parameter).then(
+              function (_data) {
+                schema.items = _data.data;
+              },
+              function (data, status) {
+                alert("Loading select items failed (URL: '" + String(options.http_get.url) +
+                "\nError: "  + status);
+              });
+            }
+            else if (options.async) {
               var cb_func = (typeof options.async.call == 'function') ?
-                  options.async.call : new Function(options.async.call);
-                  
+              options.async.call : new Function(options.async.call);
+
               return cb_func(schema, options, search).then(
-                  function (_data) {
-                      schema.items = _data.data;
-                      console.log('items', schema.items);
-                  },
-                  function (data, status) {
-                      alert("Loading select items failed(Options: '" + String(options) +
-                          "\nError: "  + status);
-                  });
-          }
-          
-        }
-    };
-  }])
+                function (_data) {
+                  schema.items = _data.data;
+                },
+                function (data, status) {
+                  alert("Loading select items failed(Options: '" + String(options) +
+                  "\nError: "  + status);
+                });
+              }
+
+            }
+          };
+        }])
