@@ -65,34 +65,6 @@ angular.module('schemaForm').config(
       }],
     };
   })
-  .directive("toggleModel", function() {
-    // some how we get this to work ...
-    return {
-      require: 'ngModel',
-      restrict: "A",
-      scope: {},
-      replace: true,
-      controller: ['$scope','sfSelect', function($scope,  sfSelect)  {
-        var list = sfSelect($scope.$parent.form.key, $scope.$parent.model);
-        //as per base array implemenation if the array is undefined it must be set as empty for data binding to work
-        if (angular.isUndefined(list)) {
-          list = [];
-          sfSelect($scope.$parent.form.key, $scope.$parent.model, list);
-        }
-        $scope.$parent.$watch('form.select_models',function(){
-          if($scope.$parent.form.select_models.length == 0) {
-            $scope.$parent.insideModel = $scope.$parent.$$value$$;
-            if($scope.$parent.ngModel.$viewValue != undefined) {
-              $scope.$parent.ngModel.$setViewValue($scope.$parent.form.select_models);
-            }
-          } else {
-            $scope.$parent.insideModel = $scope.$parent.form.select_models;
-            $scope.$parent.ngModel.$setViewValue($scope.$parent.form.select_models);
-          }
-        }, true);
-      }],
-    };
-  })
   .filter('whereMulti', function() {
     return function(items, key, values) {
       var out = [];
@@ -150,12 +122,19 @@ angular.module('schemaForm').config(
   })
   .controller('UiSelectController', ['$scope', '$http', function($scope, $http) {
 
-    $scope.onSelect = function (modelValue, value, options) {
+    $scope.select_model = {}
+
+    $scope.$on('clear-select-model', function(event, form_key) {
+      if($scope.select_model.selected === undefined || !$scope.form_key.includes(form_key)) return
+      $scope.$apply(function() {
+        $scope.select_model.selected = undefined
+      })
+    })
+
+    $scope.onSelect = function (value, options) {
       if(options && options.onSelect) {
         var os_func = (typeof options.onSelect == 'function') ? options.onSelect : new Function(options.onSelect)
-        os_func(modelValue, value, options)
-      } else {
-        modelValue = value
+        os_func(value, options)
       }
     }
 
