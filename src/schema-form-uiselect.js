@@ -126,7 +126,7 @@ angular.module('schemaForm').config(
 
     $scope.$on('clear-select-model', function(event, form_key) {
       if($scope.select_model.selected === undefined || !$scope.form_key.includes(form_key)) return
-      $scope.$apply(function() {
+      $scope.$evalAsync(function() {
         $scope.select_model.selected = undefined
       })
     })
